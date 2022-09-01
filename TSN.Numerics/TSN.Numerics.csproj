@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<MajorMinorVersion>1.0</MajorMinorVersion>
+		<VersionBuildNumber>$([System.DateTime]::Today.ToUniversalTime().Subtract(2022-09-01).Days)</VersionBuildNumber>
+		<VersionRevision>$([System.Math]::Truncate($([System.DateTime]::UtcNow.TimeOfDay.TotalMinutes)))</VersionRevision>
+		<VersionSuffix>beta</VersionSuffix>
+		<AssemblyVersion>$(MajorMinorVersion).$(VersionBuildNumber).$(VersionRevision)</AssemblyVersion>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<Version>$(AssemblyVersion)-$(VersionSuffix)</Version>
+		<InformationalVersion>$(AssemblyVersion)</InformationalVersion>
+		<Company>www.mustafatosun.net</Company>
+		<Authors>Mustafa TOSUN</Authors>
+		<Copyright>Copyright © Mustafa TOSUN, 2022.</Copyright>
+		<Description>A library that presents a wrapper structure named 'Numeric' which can contain different types of numbers.</Description>
+		<Title>$(AssemblyName)</Title>
+		<Product>$(AssemblyName)</Product>
+		<SignAssembly>False</SignAssembly>
+		<PackageProjectUrl>https://github.com/mtosun07/TSN.Numerics</PackageProjectUrl>
+		<RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageId>MustafaTosun_$(AssemblyName)</PackageId>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageTags>numeric;number;wrap;wrapper;integer;complex;maths;mathematics;convert;sbyte;byte;short;ushort;int16;uint16;int;uint;int32;uint32;long;ulong;int64;uint64;half;float;single;double;decimal</PackageTags>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\icon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\icon.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
+</Project>
