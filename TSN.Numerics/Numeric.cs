@@ -137,6 +137,7 @@ namespace TSN.Numerics
         }
         public object Clone() => +this;
         public bool Equals(Numeric other) => CompareTo(other) == 0;
+
         public int CompareTo(object obj) => CompareTo(obj is Numeric n ? n : throw new ArgumentNullException(nameof(obj)));
         public int CompareTo(Numeric other)
         {
@@ -184,8 +185,17 @@ namespace TSN.Numerics
                 if (other._c.HasValue)
                     return Compare(_c.Value, other._c.Value);
             }
+            else if (other.IsEmpty())
+                return 0;
             throw new ArithmeticException();
         }
         public string ToString(string format, IFormatProvider formatProvider) => _i?.ToString(format, formatProvider) ?? _d?.ToString(format, formatProvider) ?? _m?.ToString(format, formatProvider) ?? _c?.ToString(format, formatProvider) ?? string.Empty;
+
+        public static bool operator ==(Numeric left, Numeric right) => left.CompareTo(right) == 0;
+        public static bool operator !=(Numeric left, Numeric right) => left.CompareTo(right) != 0;
+        public static bool operator <(Numeric left, Numeric right) => left.CompareTo(right) < 0;
+        public static bool operator >(Numeric left, Numeric right) => left.CompareTo(right) > 0;
+        public static bool operator <=(Numeric left, Numeric right) => left.CompareTo(right) <= 0;
+        public static bool operator >=(Numeric left, Numeric right) => left.CompareTo(right) >= 0;
     }
 }

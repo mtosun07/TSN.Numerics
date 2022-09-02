@@ -364,11 +364,5 @@ namespace TSN.Numerics
 			}
 			throw new ArithmeticException();
 		}
-		public static bool operator ==(Numeric left, Numeric right) => left.CompareTo(right) == 0;
-		public static bool operator !=(Numeric left, Numeric right) => left.CompareTo(right) != 0;
-		public static bool operator <(Numeric left, Numeric right) => left.CompareTo(right) < 0;
-		public static bool operator >(Numeric left, Numeric right) => left.CompareTo(right) > 0;
-		public static bool operator <=(Numeric left, Numeric right) => left.CompareTo(right) <= 0;
-		public static bool operator >=(Numeric left, Numeric right) => left.CompareTo(right) >= 0;
 	}
 }

@@ -10,3 +10,4 @@ Mustafa TOSUN
 | **Version: 1.0.0-beta** | First release |
 | **Version: 1.0.1** | Minor fixes |
 | **Version: 1.0.2** | Minor fixes |
+| **Version: 1.0.3** | Fixes in equality comparison |
