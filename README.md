@@ -6,6 +6,8 @@ Mustafa TOSUN | www.mustafatosun.net
 
 <hr/>
 
-### VersionNotes
-* <b>Version: 1.0.0-beta<b/>	: First release
-* <b>Version: 1.0.1<b/>			: Minor fixes
+### Version Notes
+|||
+---|---
+**Version: 1.0.0-beta**|First release
+**Version: 1.0.1**|Minor fixes
