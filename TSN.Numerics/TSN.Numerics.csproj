@@ -5,7 +5,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MajorMinorBuildVersion>1.0.1</MajorMinorBuildVersion>
+		<MajorMinorBuildVersion>1.0.2</MajorMinorBuildVersion>
 		<VersionRevision>$([System.Math]::Truncate($([MSBuild]::Multiply(10, $([System.DateTime]::Now.ToUniversalTime().Subtract(2022-09-01).TotalHours)))))</VersionRevision>
 		<AssemblyVersion>$(MajorMinorBuildVersion).$(VersionRevision)</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
