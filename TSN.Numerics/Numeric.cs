@@ -122,7 +122,7 @@ namespace TSN.Numerics
         public bool IsEmpty() => !_i.HasValue && !_d.HasValue && !_m.HasValue && !_c.HasValue;
         public bool IsFinite() => _i.HasValue || _m.HasValue || (_d.HasValue ? IsFinite(_d.Value) : (_c.HasValue && IsFinite(_c.Value)));
         public bool IsInfinity() => _d.HasValue ? double.IsInfinity(_d.Value) : (_c.HasValue && IsInfinity(_c.Value));
-        public bool IsNaN() => _d.HasValue ? double.IsNaN(_d.Value) : (_c.HasValue ? IsNaN(_c.Value) : (_i.HasValue || _m.HasValue));
+        public bool IsNaN() => _d.HasValue ? double.IsNaN(_d.Value) : (_c.HasValue ? IsNaN(_c.Value) : (!_i.HasValue && !_m.HasValue));
 
         public override string ToString() => _i?.ToString() ?? _d?.ToString() ?? _m?.ToString() ?? _c?.ToString();
         public override int GetHashCode() => _i?.GetHashCode() ?? _d?.GetHashCode() ?? _m?.GetHashCode() ?? _c?.GetHashCode() ?? 0;

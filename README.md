@@ -4,6 +4,7 @@ A library that presents a wrapper structure named 'Numeric' which can contain di
 
 Mustafa TOSUN | www.mustafatosun.net
 
+<hr/>
 ### VersionNotes
-#### Version: 1.0-beta
-First release.
+* <b>Version: 1.0.0-beta<b/>	: First release
+* <b>Version: 1.0.1<b/>			: Minor fixes

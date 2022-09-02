@@ -5,13 +5,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MajorMinorVersion>1.0</MajorMinorVersion>
-		<VersionBuildNumber>$([System.DateTime]::Today.ToUniversalTime().Subtract(2022-09-01).Days)</VersionBuildNumber>
-		<VersionRevision>$([System.Math]::Truncate($([System.DateTime]::UtcNow.TimeOfDay.TotalMinutes)))</VersionRevision>
-		<VersionSuffix>beta</VersionSuffix>
-		<AssemblyVersion>$(MajorMinorVersion).$(VersionBuildNumber).$(VersionRevision)</AssemblyVersion>
+		<MajorMinorBuildVersion>1.0.1</MajorMinorBuildVersion>
+		<VersionRevision>$([System.Math]::Truncate($([MSBuild]::Multiply(10, $([System.DateTime]::Now.ToUniversalTime().Subtract(2022-09-01).TotalHours)))))</VersionRevision>
+		<AssemblyVersion>$(MajorMinorBuildVersion).$(VersionRevision)</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
-		<Version>$(AssemblyVersion)-$(VersionSuffix)</Version>
+		<Version>$(AssemblyVersion)</Version>
 		<InformationalVersion>$(AssemblyVersion)</InformationalVersion>
 		<Company>www.mustafatosun.net</Company>
 		<Authors>Mustafa TOSUN</Authors>
@@ -23,7 +21,7 @@
 		<PackageProjectUrl>https://github.com/mtosun07/TSN.Numerics</PackageProjectUrl>
 		<RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageId>MustafaTosun_$(AssemblyName)</PackageId>
+		<PackageId>$(AssemblyName)</PackageId>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageTags>numeric;number;wrap;wrapper;integer;complex;maths;mathematics;convert;sbyte;byte;short;ushort;int16;uint16;int;uint;int32;uint32;long;ulong;int64;uint64;half;float;single;double;decimal</PackageTags>
 		<PackageIcon>icon.png</PackageIcon>
