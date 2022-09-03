@@ -79,31 +79,76 @@ namespace TSN.Numerics
         }
         public Numeric(float value)
         {
-            _i = null;
-            _d = value;
             _m = null;
             _c = null;
+            double f = value, x = Math.Truncate(f);
+            if (f == x)
+            {
+                _i = (BigInteger)x;
+                _d = null;
+            }
+            else
+            {
+                _i = null;
+                _d = value;
+            }
         }
         public Numeric(double value)
         {
-            _i = null;
-            _d = value;
             _m = null;
             _c = null;
+            var x = Math.Truncate(value);
+            if (value == x)
+            {
+                _i = (BigInteger)x;
+                _d = null;
+            }
+            else
+            {
+                _i = null;
+                _d = value;
+            }
         }
         public Numeric(decimal value)
         {
-            _i = null;
             _d = null;
-            _m = value;
             _c = null;
+            var x = Math.Truncate(value);
+            if (value == x)
+            {
+                _i = (BigInteger)x;
+                _m = null;
+            }
+            else
+            {
+                _i = null;
+                _m = value;
+            }
         }
         public Numeric(Complex value)
         {
-            _i = null;
-            _d = null;
             _m = null;
-            _c = value;
+            if (value.Imaginary == 0D)
+            {
+                _c = null;
+                var x = Math.Truncate(value.Real);
+                if (value.Real == x)
+                {
+                    _i = null;
+                    _d = x;
+                }
+                else
+                {
+                    _i = (BigInteger)x;
+                    _d = null;
+                }
+            }
+            else
+            {
+                _i = null;
+                _d = null;
+                _c = value;
+            }
         }
 
 
