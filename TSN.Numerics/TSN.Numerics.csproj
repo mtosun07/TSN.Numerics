@@ -26,7 +26,7 @@
 		<PackageTags>numeric;number;wrap;wrapper;integer;complex;maths;mathematics;convert;sbyte;byte;short;ushort;int16;uint16;int;uint;int32;uint32;long;ulong;int64;uint64;half;float;single;double;decimal</PackageTags>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageReleaseNotes>Minor fixes</PackageReleaseNotes>
+		<PackageReleaseNotes>Critical fix for numbers of type Complex</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -134,13 +134,13 @@ namespace TSN.Numerics
                 var x = Math.Truncate(value.Real);
                 if (value.Real == x)
                 {
-                    _i = null;
-                    _d = x;
+                    _i = (BigInteger)x;
+                    _d = null;
                 }
                 else
                 {
-                    _i = (BigInteger)x;
-                    _d = null;
+                    _i = null;
+                    _d = value.Real;
                 }
             }
             else
