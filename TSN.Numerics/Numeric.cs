@@ -90,7 +90,7 @@ namespace TSN.Numerics
             else
             {
                 _i = null;
-                _d = value;
+                _d = f;
             }
         }
         public Numeric(double value)
