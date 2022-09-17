@@ -39,7 +39,8 @@ namespace TSN.Numerics
 		private static int Compare(Complex left, Complex right) => right.Imaginary != 0D || left.Imaginary != 0D ? throw new ArithmeticException() : left.Real.CompareTo(right.Real);
 		public static Numeric Abs(Numeric value) => value._i.HasValue ? BigInteger.Abs(value._i.Value) : (value._d.HasValue ? Math.Abs(value._d.Value) : (value._m.HasValue ? Math.Abs(value._m.Value) : (value._c.HasValue ? Complex.Abs(value._c.Value) : _empty)));
 		public static Numeric Negate(Numeric value) => -value;
-		public static Numeric Add(Numeric left, Numeric right) => left + right;
+        public static Numeric Inverse(Numeric value) => value._m.HasValue ? new Numeric(1M / value._m.Value) : (1D / value);
+        public static Numeric Add(Numeric left, Numeric right) => left + right;
 		public static Numeric Subtract(Numeric left, Numeric right) => left - right;
 		public static Numeric Multiply(Numeric left, Numeric right) => left * right;
 		public static Numeric Divide(Numeric dividend, Numeric divisor) => dividend / divisor;
@@ -55,8 +56,6 @@ namespace TSN.Numerics
 			remainder = dividend % divisor;
 			return dividend / divisor;
 		}
-		public static Numeric Min(Numeric left, Numeric right) => left < right ? left : right;
-		public static Numeric Max(Numeric left, Numeric right) => left > right ? left : right;
 		public static Numeric Pow(Numeric value, Numeric exponent)
 		{
 			if (exponent._i.HasValue)
@@ -114,7 +113,14 @@ namespace TSN.Numerics
 		public static Numeric Log10(Numeric value) => value._i.HasValue ? BigInteger.Log10(value._i.Value) : (value._c.HasValue ? Complex.Log10(value._c.Value) : (value._d.HasValue ? Math.Log10(value._d.Value) : (value._m.HasValue ? Math.Log10((double)value._m.Value) : _empty)));
 		public static Numeric Exp(Numeric value) => value._i.HasValue ? Math.Exp((double)value._i.Value) : (value._c.HasValue ? Complex.Exp(value._c.Value) : (value._d.HasValue ? Math.Exp(value._d.Value) : (value._m.HasValue ? Math.Exp((double)value._m.Value) : _empty)));
 
-		public static Numeric operator &(Numeric left, Numeric right) => (left._i.HasValue && right._i.HasValue) ? left._i.Value & right._i.Value : throw new ArithmeticException();
+		public static Numeric Min(Numeric left, Numeric right) => left < right ? left : right;
+		public static Numeric Max(Numeric left, Numeric right) => left > right ? left : right;
+        public static Numeric Round(Numeric value, int digits = 0, MidpointRounding mode = MidpointRounding.AwayFromZero) => value._i.HasValue || value._c.HasValue || !value.IsFinite() ? value : (value._d.HasValue ? new Numeric(Math.Round(value._d.Value, digits, mode)) : new Numeric(Math.Round(value._m.Value, digits, mode)));
+        public static Numeric Ceiling(Numeric value) => value._i.HasValue || value._c.HasValue || !value.IsFinite() ? value : (value._d.HasValue ? new Numeric(Math.Ceiling(value._d.Value)) : new Numeric(Math.Ceiling(value._m.Value)));
+        public static Numeric Floor(Numeric value) => value._i.HasValue || value._c.HasValue || !value.IsFinite() ? value : (value._d.HasValue ? new Numeric(Math.Floor(value._d.Value)) : new Numeric(Math.Floor(value._m.Value)));
+        public static Numeric Truncate(Numeric value) => value._i.HasValue || value._c.HasValue || !value.IsFinite() ? value : (value._d.HasValue ? new Numeric(Math.Truncate(value._d.Value)) : new Numeric(Math.Truncate(value._m.Value)));
+
+        public static Numeric operator &(Numeric left, Numeric right) => (left._i.HasValue && right._i.HasValue) ? left._i.Value & right._i.Value : throw new ArithmeticException();
 		public static Numeric operator |(Numeric left, Numeric right) => (left._i.HasValue && right._i.HasValue) ? left._i.Value | right._i.Value : throw new ArithmeticException();
 		public static Numeric operator ^(Numeric left, Numeric right) => (left._i.HasValue && right._i.HasValue) ? left._i.Value ^ right._i.Value : throw new ArithmeticException();
 		public static Numeric operator <<(Numeric value, int shift) => (value._i ?? throw new ArithmeticException()) << shift;
@@ -273,7 +279,19 @@ namespace TSN.Numerics
 			if (dividend._i.HasValue)
 			{
 				if (divisor._i.HasValue)
-					return new Numeric(dividend._i.Value / divisor._i.Value);
+				{
+					var div = BigInteger.DivRem(dividend._i.Value, divisor._i.Value, out var rem);
+					if (rem.Sign == 0)
+						return new Numeric(div);
+					double? d = null;
+					try
+					{
+						d = checked((double)div);
+					}
+					catch (OverflowException) { }
+					decimal m;
+                    return d.HasValue ? new Numeric(d.Value + ((double)rem / d.Value)) : ((m = (decimal)div) + ((decimal)rem / m));
+                }
 				else if (divisor._d.HasValue)
 					return new Numeric((double)dividend._i.Value / divisor._d.Value);
 				else if (divisor._m.HasValue)

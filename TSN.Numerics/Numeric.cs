@@ -14,85 +14,30 @@ namespace TSN.Numerics
             _m = (decimal?)info.GetValue(nameof(_m), typeof(decimal?));
             _c = (Complex?)info.GetValue(nameof(_c), typeof(Complex?));
         }
-        public Numeric(sbyte value)
-        {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
-        public Numeric(byte value)
-        {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
-        public Numeric(short value)
-        {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
-        public Numeric(ushort value)
-        {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
-        public Numeric(int value)
-        {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
-        public Numeric(uint value)
-        {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
-        public Numeric(long value)
-        {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
-        public Numeric(ulong value)
-        {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
+        public Numeric(sbyte value) : this((BigInteger)value) { }
+        public Numeric(byte value) : this((BigInteger)value) { }
+        public Numeric(short value) : this((BigInteger)value) { }
+        public Numeric(ushort value) : this((BigInteger)value) { }
+        public Numeric(int value) : this((BigInteger)value) { }
+        public Numeric(uint value) : this((BigInteger)value) { }
+        public Numeric(long value) : this((BigInteger)value) { }
+        public Numeric(ulong value) : this((BigInteger)value) { }
         public Numeric(BigInteger value)
         {
-            _i = value;
-            _d = null;
-            _m = null;
-            _c = null;
-        }
-        public Numeric(float value)
-        {
-            _m = null;
-            _c = null;
-            double f = value, x = Math.Truncate(f);
-            if (f == x)
+            if (value.Sign == 0)
             {
-                _i = (BigInteger)x;
-                _d = null;
+                _i = null;
+                _d = 0D;
             }
             else
             {
-                _i = null;
-                _d = f;
+                _i = value;
+                _d = null;
             }
+            _m = null;
+            _c = null;
         }
+        public Numeric(float value) : this((double)value) { }
         public Numeric(double value)
         {
             _m = null;
@@ -168,6 +113,16 @@ namespace TSN.Numerics
         public bool IsFinite() => _i.HasValue || _m.HasValue || (_d.HasValue && IsFinite(_d.Value)) || (_c.HasValue && IsFinite(_c.Value));
         public bool IsInfinity() => (_d.HasValue && double.IsInfinity(_d.Value)) || (_c.HasValue && IsInfinity(_c.Value));
         public bool IsNaN() => _d.HasValue ? double.IsNaN(_d.Value) : (_c.HasValue ? IsNaN(_c.Value) : (!_i.HasValue && !_m.HasValue));
+        public static bool TryGetSign(Numeric value, out int sign)
+        {
+            if (!value.IsEmpty() && !value.IsNaN())
+            {
+                sign = value._i?.Sign ?? value.CompareTo(_zero);
+                return true;
+            }
+            sign = 0;
+            return false;
+        }
 
         public override string ToString() => _i?.ToString() ?? _d?.ToString() ?? _m?.ToString() ?? _c?.ToString();
         public override int GetHashCode() => _i?.GetHashCode() ?? _d?.GetHashCode() ?? _m?.GetHashCode() ?? _c?.GetHashCode() ?? 0;

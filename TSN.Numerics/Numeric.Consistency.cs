@@ -7,28 +7,21 @@ namespace TSN.Numerics
         static Numeric()
         {
             _empty = new Numeric();
-            _NaN = _d_NaN;
+            _NaN = 0D / 0D;
             _minusOne = BigInteger.MinusOne;
             _zero = BigInteger.Zero;
             _one = BigInteger.One;
-            _negativeInfinity = _d_NegativeInfinity;
-            _positiveInfinity = _d_PositiveInfinity;
-            _epsilon = _d_Epsilon;
-            _E = _d_E;
-            _PI = _d_PI;
-            _tau = _d_Tau;
+            _negativeInfinity = -1D / 0D;
+            _positiveInfinity = 1D / 0D;
+            _epsilon = 4.94065645841247E-324;
+            _E = 2.7182818284590451;
+            _PI = 3.1415926535897931;
+            _tau = 6.2831853071795862;
         }
 
 
         private const double _d_DecimalMin = (double)decimal.MinValue;
         private const double _d_DecimalMax = (double)decimal.MaxValue;
-        private const double _d_NegativeInfinity = -1D / 0D;
-        private const double _d_PositiveInfinity = 1D / 0D;
-        private const double _d_NaN = 0D / 0D;
-        private const double _d_Epsilon = 4.94065645841247E-324;
-        private const double _d_E = 2.7182818284590451;
-        private const double _d_PI = 3.1415926535897931;
-        private const double _d_Tau = 6.2831853071795862;
         
         private static readonly Numeric _empty;
         private static readonly Numeric _minusOne;

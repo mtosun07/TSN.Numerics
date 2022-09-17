@@ -6,6 +6,55 @@ namespace TSN.Numerics
 {
     partial struct Numeric
     {
+        public bool TryConvertToInteger(out BigInteger value)
+        {
+            if (_i.HasValue)
+            {
+                value = _i.Value;
+                return true;
+            }
+            value = default;
+            return false;
+        }
+        public bool TryConvertToDouble(out double value)
+        {
+            if (_d.HasValue)
+            {
+                value = _d.Value;
+                return true;
+            }
+            value = default;
+            return false;
+        }
+        public bool TryConvertToDecimal(out decimal value)
+        {
+            if (_m.HasValue)
+            {
+                value = _m.Value;
+                return true;
+            }
+            value = default;
+            return false;
+        }
+        public bool TryConvertToComplex(out Complex value)
+        {
+            if (_c.HasValue)
+            {
+                value = _c.Value;
+                return true;
+            }
+            try
+            {
+                value = new Complex(checked((double)this), 0D);
+                return true;
+            }
+            catch (OverflowException)
+            {
+                value = default;
+                return false;
+            }
+        }
+
         public static Numeric Parse(string value) => BigInteger.TryParse(value, out var i) ? new Numeric(i) : (double.TryParse(value, out var d) ? new Numeric(d) : decimal.TryParse(value, out var m) ? new Numeric(m) : throw new FormatException());
         public static Numeric Parse(string value, NumberStyles style) => BigInteger.TryParse(value, style, null, out var i) ? new Numeric(i) : (double.TryParse(value, style, null, out var d) ? new Numeric(d) : decimal.TryParse(value, style, null, out var m) ? new Numeric(m) : throw new FormatException());
         public static Numeric Parse(string value, IFormatProvider provider) => BigInteger.TryParse(value, NumberStyles.Integer, provider, out var i) ? new Numeric(i) : (double.TryParse(value, NumberStyles.Number, provider, out var d) ? new Numeric(d) : decimal.TryParse(value, NumberStyles.Number, provider, out var m) ? new Numeric(m) : throw new FormatException());
