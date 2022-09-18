@@ -425,8 +425,8 @@ namespace TSN.Numerics
                 {   // The result has to be a Complex number.
                     /*
                      * In this case denominator of the exponent has to be an even number.
-                     * So, sign of the result's imaginer part is determined by
-                     * whether the exponent is even or not; which makes the imaginer
+                     * So, sign of the result's Imaginer part is determined by
+                     * whether the exponent is even or not; which makes the Imaginer
                      * part positive if the exponent is even.
                      * 
                      */
