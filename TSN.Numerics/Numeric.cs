@@ -422,8 +422,8 @@ namespace TSN.Numerics
                 if (exponent < _zero)
                     return Inverse(Pow(value, -exponent));
                 var pow = Pow(Abs(value), exponent);
-                var d = (double)Floor(exponent);
-                return d == 0D || double.IsNaN(Math.Pow(-1D, d)) ? new Complex(0D, (double)pow) : pow;
+                var d = Floor(exponent)._i.Value;
+                return d == 0 || d % 2 == 0 ? new Complex(0D, (double)pow) : pow;
             }
             return value._c.HasValue ? Complex.Pow(value._c.Value, exponent._d.Value) : Math.Pow(value._i.HasValue ? ((double)value._i.Value) : (value._d ?? ((double)value._m.Value)), exponent._d.Value);
         }
