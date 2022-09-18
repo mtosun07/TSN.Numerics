@@ -148,11 +148,11 @@ namespace TSN.Numerics
         public bool IsInfinity() => (_d.HasValue && double.IsInfinity(_d.Value)) || (_c.HasValue && IsInfinity(_c.Value));
         public bool IsNaN() => _d.HasValue ? double.IsNaN(_d.Value) : (_c.HasValue ? IsNaN(_c.Value) : (!_i.HasValue && !_m.HasValue));
         public bool IsZero() => _i.HasValue && _i.Value.Sign == 0;
-        public static bool TryGetSign(Numeric value, out int sign)
+        public bool TryGetSign(out int sign)
         {
-            if (!value.IsEmpty() && !value.IsNaN())
+            if (!IsEmpty() && !IsNaN())
             {
-                sign = value._i?.Sign ?? value.CompareTo(_zero);
+                sign = _i?.Sign ?? CompareTo(_zero);
                 return true;
             }
             sign = 0;
