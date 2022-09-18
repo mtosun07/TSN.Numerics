@@ -12,9 +12,13 @@ namespace TSN.Numerics
         {
             _empty = new Numeric();
             _NaN = 0D / 0D;
+            _minusTwo = -2;
             _minusOne = BigInteger.MinusOne;
+            _minusHalf= -.5;
             _zero = BigInteger.Zero;
+            _half = .5;
             _one = BigInteger.One;
+            _two = 2;
             _negativeInfinity = -1D / 0D;
             _positiveInfinity = 1D / 0D;
             _epsilon = 4.94065645841247E-324;
@@ -108,9 +112,13 @@ namespace TSN.Numerics
         private const double _d_DecimalMax = (double)decimal.MaxValue;
 
         private static readonly Numeric _empty;
+        private static readonly Numeric _minusTwo;
         private static readonly Numeric _minusOne;
+        private static readonly Numeric _minusHalf;
         private static readonly Numeric _zero;
+        private static readonly Numeric _half;
         private static readonly Numeric _one;
+        private static readonly Numeric _two;
         private static readonly Numeric _NaN;
         private static readonly Numeric _negativeInfinity;
         private static readonly Numeric _positiveInfinity;
@@ -130,9 +138,13 @@ namespace TSN.Numerics
         public bool IsComplex => _c.HasValue;
 
         public static Numeric Empty => _empty;
+        public static Numeric MinusTwo => _minusTwo;
         public static Numeric MinusOne => _minusOne;
+        public static Numeric MinusHalf => _minusHalf;
         public static Numeric Zero => _zero;
+        public static Numeric Half => _half;
         public static Numeric One => _one;
+        public static Numeric Two => _two;
         public static Numeric NaN => _NaN;
         public static Numeric NegativeInfinity => _negativeInfinity;
         public static Numeric PositiveInfinity => _positiveInfinity;
@@ -421,7 +433,7 @@ namespace TSN.Numerics
             {
                 if (exponent < _zero)
                     return Inverse(Pow(value, -exponent));
-                if (exponent >= .5 && (exponent % .5).IsZero())
+                if (exponent >= _half && (exponent % _half).IsZero())
                 {   // The result has to be a Complex number.
                     /*
                      * In this case denominator of the exponent has to be an even number.
@@ -436,7 +448,7 @@ namespace TSN.Numerics
                      */
 
                     var powAbs = Pow(Abs(value), exponent);
-                    return new Complex(0, (double)((Floor(exponent) % 2).IsZero() ? powAbs : -powAbs));
+                    return new Complex(0, (double)((Floor(exponent) % _two).IsZero() ? powAbs : -powAbs));
                 }
                 else
                 {   // The result has to be a Real number.
@@ -468,7 +480,7 @@ namespace TSN.Numerics
             return value._c.HasValue ? Complex.Pow(value._c.Value, exponent._d ?? (double)exponent._m.Value) : Math.Pow(value._i.HasValue ? ((double)value._i.Value) : (value._d ?? ((double)value._m.Value)), exponent._d ?? (double)exponent._m.Value);
         }
         public static Numeric ModPow(Numeric value, Numeric exponent, Numeric modulus) => Pow(value, exponent) % modulus;
-        public static Numeric Sqrt(Numeric value) => Pow(value, .5);
+        public static Numeric Sqrt(Numeric value) => Pow(value, _half);
         public static Numeric Log(Numeric value) => value.IsFinite() && value < _zero ? Complex.Log((Complex)value) : (value._i.HasValue ? BigInteger.Log(value._i.Value) : (value._c.HasValue ? Complex.Log(value._c.Value) : (value._d.HasValue ? Math.Log(value._d.Value) : (value._m.HasValue ? Math.Log((double)value._m.Value) : _empty))));
         public static Numeric Log(Numeric value, Numeric baseValue) => value.IsFinite() && value < _zero ? Complex.Log((Complex)value, (double)baseValue) : (value._i.HasValue ? BigInteger.Log(value._i.Value, (double)baseValue) : (value._c.HasValue ? Complex.Log(value._c.Value, (double)baseValue) : (value._d.HasValue ? Math.Log(value._d.Value, (double)baseValue) : (value._m.HasValue ? Math.Log((double)value._m.Value, (double)baseValue) : _empty))));
         public static Numeric Log10(Numeric value) => value.IsFinite() && value < _zero ? Complex.Log10((Complex)value) : (value._i.HasValue ? BigInteger.Log10(value._i.Value) : (value._c.HasValue ? Complex.Log10(value._c.Value) : (value._d.HasValue ? Math.Log10(value._d.Value) : (value._m.HasValue ? Math.Log10((double)value._m.Value) : _empty))));
