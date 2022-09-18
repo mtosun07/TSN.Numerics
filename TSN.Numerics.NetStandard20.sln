@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSN.Numerics", "TSN.Numerics\TSN.Numerics.csproj", "{6E4C5235-B277-42AF-98A6-8F8D1A4AA268}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSN.Numerics", "TSN.Numerics\TSN.Numerics.csproj", "{6E4C5235-B277-42AF-98A6-8F8D1A4AA268}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
