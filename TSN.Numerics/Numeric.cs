@@ -425,7 +425,7 @@ namespace TSN.Numerics
                 var d = Floor(exponent)._i.Value;
                 return d == 0 || d % 2 == 0 ? new Complex(0D, (double)pow) : pow;
             }
-            return value._c.HasValue ? Complex.Pow(value._c.Value, exponent._d.Value) : Math.Pow(value._i.HasValue ? ((double)value._i.Value) : (value._d ?? ((double)value._m.Value)), exponent._d.Value);
+            return value._c.HasValue ? Complex.Pow(value._c.Value, exponent._d ?? (double)exponent._m.Value) : Math.Pow(value._i.HasValue ? ((double)value._i.Value) : (value._d ?? ((double)value._m.Value)), exponent._d ?? (double)exponent._m.Value);
         }
         public static Numeric ModPow(Numeric value, Numeric exponent, Numeric modulus) => Pow(value, exponent) % modulus;
         public static Numeric Sqrt(Numeric value) => Pow(value, .5);
