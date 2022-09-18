@@ -445,7 +445,7 @@ namespace TSN.Numerics
                      * 
                      * However, with C# and .NET, we can't exactly decide what
                      * neither the numerator nor the denominator is,
-                     * for every exp ∈ R.
+                     * for every exponent ∈ R.
                      * 
                      * Complex.Pow(base, exponent) results an 'approximation' and it most likely
                      * returns a Complex number for this case as well. Also, even for (-1)^(1/2),
