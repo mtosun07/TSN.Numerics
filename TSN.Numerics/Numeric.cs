@@ -454,7 +454,7 @@ namespace TSN.Numerics
                      */
 
                     // TODO: Discover or invent an appropriate algorithm!
-                    return Complex.Pow((double)value, (double)exponent);
+                    return Complex.Pow((Complex)value, (double)exponent);
                 }
             }
             return value._c.HasValue ? Complex.Pow(value._c.Value, exponent._d ?? (double)exponent._m.Value) : Math.Pow(value._i.HasValue ? ((double)value._i.Value) : (value._d ?? ((double)value._m.Value)), exponent._d ?? (double)exponent._m.Value);
