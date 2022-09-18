@@ -421,7 +421,7 @@ namespace TSN.Numerics
             {
                 if (exponent < _zero)
                     return Inverse(Pow(value, -exponent));
-                if ((exponent % .5).IsZero())
+                if (exponent >= .5 && (exponent % .5).IsZero())
                 {   // The result has to be a Complex number.
                     /*
                      * In this case denominator of the exponent has to be an even number.
