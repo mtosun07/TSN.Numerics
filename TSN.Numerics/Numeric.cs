@@ -450,6 +450,7 @@ namespace TSN.Numerics
                      * Complex.Pow(base, exponent) results an 'approximation' and it most likely
                      * returns a Complex number for this case as well. Also, even for (-1)^(1/2),
                      * it's approximation does not have enough precise to be able to return "i".
+                     * 
                      */
 
                     // TODO: Discover or invent an appropriate algorithm!
