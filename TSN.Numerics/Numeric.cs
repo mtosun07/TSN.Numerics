@@ -429,6 +429,10 @@ namespace TSN.Numerics
                      * whether the exponent is even or not; which makes the Imaginer
                      * part positive if the exponent is even.
                      * 
+                     * For example:
+                     * (-1) ^ (3 / 2) = -i
+                     * (-1) ^ (5 / 2) = +i
+                     * 
                      */
 
                     var powAbs = Pow(Abs(value), exponent);
@@ -450,6 +454,10 @@ namespace TSN.Numerics
                      * Complex.Pow(base, exponent) results an 'approximation' and it most likely
                      * returns a Complex number for this case as well. Also, even for (-1)^(1/2),
                      * it's approximation does not have enough precise to be able to return "i".
+                     * 
+                     * For example:
+                     * (-1) ^ (7 / 9) = -1
+                     * (-1) ^ (8 / 9) = +1
                      * 
                      */
 
