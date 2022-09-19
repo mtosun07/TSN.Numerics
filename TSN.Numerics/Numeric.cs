@@ -399,7 +399,7 @@ namespace TSN.Numerics
                 return division;
             }
             remainder = dividend % divisor;
-            return dividend / divisor;
+            return (dividend - remainder) / divisor;
         }
         public static Numeric Pow(Numeric value, Numeric exponent)
         {
