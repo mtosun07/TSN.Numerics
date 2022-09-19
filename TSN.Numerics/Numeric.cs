@@ -433,49 +433,11 @@ namespace TSN.Numerics
             {
                 if (exponent < _zero)
                     return Inverse(Pow(value, -exponent));
-                if (exponent >= _half && (exponent % _half).IsZero())
-                {   // The result has to be a Complex number.
-                    /*
-                     * In this case denominator of the exponent has to be an even number.
-                     * So, sign of the result's Imaginer part is determined by
-                     * whether the exponent is even or not; which makes the Imaginer
-                     * part positive if the exponent is even.
-                     * 
-                     * For example:
-                     * (-1) ^ (3 / 2) = -i
-                     * (-1) ^ (5 / 2) = +i
-                     * 
-                     */
-
-                    var powAbs = Pow(Abs(value), exponent);
-                    return new Complex(0, (double)((Floor(exponent) % _two).IsZero() ? powAbs : -powAbs));
-                }
-                else
-                {   // The result has to be a Real number.
-                    /* 
-                     * In this case denominator of the exponent has to be an odd number.
-                     * So, resulting algorithm must be as demonstrated below:
-                     * 
-                     * if (numerator of the exponent is even) => result = powAbs
-                     * else => result = -1 * powAbs
-                     * 
-                     * However, with C# and .NET, we can't exactly decide what
-                     * neither the numerator nor the denominator is,
-                     * for every exponent ∈ R.
-                     * 
-                     * Complex.Pow(base, exponent) results an 'approximation' and it most likely
-                     * returns a Complex number for this case as well. Also, even for (-1)^(1/2),
-                     * its approximation does not have enough precise to be able to return "i".
-                     * 
-                     * For example:
-                     * (-1) ^ (7 / 9) = -1
-                     * (-1) ^ (8 / 9) = +1
-                     * 
-                     */
-
-                    // TODO: Discover or invent an appropriate algorithm!
-                    return Complex.Pow((Complex)value, (Complex)exponent);
-                }
+                var div = Truncate(exponent / _half);
+                var rem = exponent - div * _half;
+                var pow = Complex.Pow(-1D, (Complex)rem) * Pow(Abs(value), rem);
+                var i = div % 4;
+                return i.IsZero() ? pow : (pow * (i == _one ? Complex.ImaginaryOne : (i == _two ? new Complex(-1D, 0D) : new Complex(0D, -1D))));
             }
             return value._c.HasValue ? Complex.Pow(value._c.Value, exponent._d ?? (double)exponent._m.Value) : Math.Pow(value._i.HasValue ? ((double)value._i.Value) : (value._d ?? ((double)value._m.Value)), exponent._d ?? (double)exponent._m.Value);
         }
