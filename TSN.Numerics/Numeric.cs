@@ -383,13 +383,157 @@ namespace TSN.Numerics
         private static int Compare(Complex left, Complex right) => right.Imaginary != 0D || left.Imaginary != 0D ? throw new ArithmeticException() : left.Real.CompareTo(right.Real);
 
         public static Numeric Abs(Numeric value) => value._i.HasValue ? BigInteger.Abs(value._i.Value) : (value._d.HasValue ? Math.Abs(value._d.Value) : (value._m.HasValue ? Math.Abs(value._m.Value) : (value._c.HasValue ? Complex.Abs(value._c.Value) : _empty)));
-        public static Numeric Negate(Numeric value) => -value;
+        public static Numeric Negate(Numeric value) => Subtract(_zero, value);
         public static Numeric Inverse(Numeric value) => value._m.HasValue ? new Numeric(1M / value._m.Value) : (1D / value);
-        public static Numeric Add(Numeric left, Numeric right) => left + right;
-        public static Numeric Subtract(Numeric left, Numeric right) => left - right;
-        public static Numeric Multiply(Numeric left, Numeric right) => left * right;
-        public static Numeric Divide(Numeric dividend, Numeric divisor) => dividend / divisor;
-        public static Numeric Remainder(Numeric dividend, Numeric divisor) => dividend % divisor;
+        public static Numeric Add(Numeric left, Numeric right)
+        {
+            if (left.IsEmpty() || right.IsEmpty())
+                return _empty;
+            if (left.IsNaN() || right.IsNaN())
+                return _NaN;
+            if (left.IsInfinity() || right.IsInfinity())
+                return (left._c ?? (Complex)left._d.Value) + (right._c ?? (Complex)right._d.Value);
+            if (left.IsZero())
+                return right;
+            if (right.IsZero())
+                return left;
+            if (left._c.HasValue)
+                return left._c.Value + (right._c ?? right._d ?? (right._i.HasValue ? (double)right._i.Value : (double)right._m.Value));
+            if (right._c.HasValue)
+                return (left._d ?? (left._i.HasValue ? (double)left._i.Value : (double)left._m.Value)) + right._c.Value;
+            if (left._i.HasValue && right._i.HasValue)
+                return left._i.Value + right._i.Value;
+            if (left._d.HasValue && right._d.HasValue)
+                return left._d.Value + right._d.Value;
+            if (left._m.HasValue && right._m.HasValue)
+                return left._m.Value + right._m.Value;
+            try
+            {
+                return checked(left._d ?? (left._i.HasValue ? (double)left._i.Value : (double)left._m.Value)) + checked(right._d ?? (right._i.HasValue ? (double)right._i.Value : (double)right._m.Value));
+            }
+            catch (OverflowException) { }
+            return checked(left._m ?? (left._i.HasValue ? (decimal)left._i.Value : (decimal)left._d.Value)) + checked(right._m ?? (right._i.HasValue ? (decimal)right._i.Value : (decimal)right._d.Value));
+        }
+        public static Numeric Subtract(Numeric left, Numeric right)
+        {
+            if (left.IsEmpty() || right.IsEmpty())
+                return _empty;
+            if (left.IsNaN() || right.IsNaN())
+                return _NaN;
+            if (left.IsInfinity() || right.IsInfinity())
+                return (left._c ?? (Complex)left._d.Value) - (right._c ?? (Complex)right._d.Value);
+            if (left == right)
+                return _zero;
+            if (right.IsZero())
+                return left;
+            if (left._c.HasValue)
+                return left._c.Value - (right._c ?? right._d ?? (right._i.HasValue ? (double)right._i.Value : (double)right._m.Value));
+            if (right._c.HasValue)
+                return (left._d ?? (left._i.HasValue ? (double)left._i.Value : (double)left._m.Value)) - right._c.Value;
+            if (left._i.HasValue && right._i.HasValue)
+                return left._i.Value - right._i.Value;
+            if (left._d.HasValue && right._d.HasValue)
+                return left._d.Value - right._d.Value;
+            if (left._m.HasValue && right._m.HasValue)
+                return left._m.Value - right._m.Value;
+            try
+            {
+                return checked(left._d ?? (left._i.HasValue ? (double)left._i.Value : (double)left._m.Value)) - checked(right._d ?? (right._i.HasValue ? (double)right._i.Value : (double)right._m.Value));
+            }
+            catch (OverflowException) { }
+            return checked(left._m ?? (left._i.HasValue ? (decimal)left._i.Value : (decimal)left._d.Value)) - checked(right._m ?? (right._i.HasValue ? (decimal)right._i.Value : (decimal)right._d.Value));
+        }
+        public static Numeric Multiply(Numeric left, Numeric right)
+        {
+            if (left.IsEmpty() || right.IsEmpty())
+                return _empty;
+            if (left.IsNaN() || right.IsNaN())
+                return _NaN;
+            if (left.IsInfinity() || right.IsInfinity())
+                return (left._c ?? (Complex)left._d.Value) * (right._c ?? (Complex)right._d.Value);
+            if (left.IsZero() || right.IsZero())
+                return _zero;
+            if (left == _one)
+                return right;
+            if (right == _one)
+                return left;
+            if (left._c.HasValue)
+                return left._c.Value * (right._c ?? right._d ?? (right._i.HasValue ? (double)right._i.Value : (double)right._m.Value));
+            if (right._c.HasValue)
+                return (left._d ?? (left._i.HasValue ? (double)left._i.Value : (double)left._m.Value)) * right._c.Value;
+            if (left._i.HasValue && right._i.HasValue)
+                return left._i.Value * right._i.Value;
+            if (left._d.HasValue && right._d.HasValue)
+                return left._d.Value * right._d.Value;
+            if (left._m.HasValue && right._m.HasValue)
+                return left._m.Value * right._m.Value;
+            try
+            {
+                return checked(left._d ?? (left._i.HasValue ? (double)left._i.Value : (double)left._m.Value)) * checked(right._d ?? (right._i.HasValue ? (double)right._i.Value : (double)right._m.Value));
+            }
+            catch (OverflowException) { }
+            return checked(left._m ?? (left._i.HasValue ? (decimal)left._i.Value : (decimal)left._d.Value)) * checked(right._m ?? (right._i.HasValue ? (decimal)right._i.Value : (decimal)right._d.Value));
+        }
+        public static Numeric Divide(Numeric dividend, Numeric divisor)
+        {
+            if (divisor.IsEmpty() || dividend.IsEmpty())
+                return _empty;
+            if (divisor.IsNaN() || dividend.IsNaN())
+                return _NaN;
+            if (dividend.IsInfinity() || divisor.IsInfinity())
+                return (dividend._c ?? (Complex)dividend._d.Value) / (divisor._c ?? (Complex)divisor._d.Value);
+            if (divisor.IsZero())
+                return dividend.IsZero() ? _NaN : (dividend < _zero ? _negativeInfinity : _positiveInfinity);
+            if (dividend.IsZero())
+                return _zero;
+            if (divisor == _one)
+                return dividend;
+            if (dividend == divisor)
+                return _one;
+            if (dividend._c.HasValue)
+                return dividend._c.Value / (divisor._c ?? divisor._d ?? (divisor._i.HasValue ? (double)divisor._i.Value : (double)divisor._m.Value));
+            if (divisor._c.HasValue)
+                return (dividend._d ?? (dividend._i.HasValue ? (double)dividend._i.Value : (double)dividend._m.Value)) / divisor._c.Value;
+            if (dividend._i.HasValue && divisor._i.HasValue && dividend._i.Value > divisor._i.Value)
+            {
+                var div = BigInteger.DivRem(dividend._i.Value, divisor._i.Value, out var rem);
+                if (rem.Sign == 0)
+                    return div;
+            }
+            if (dividend._d.HasValue && divisor._d.HasValue)
+                return dividend._d.Value / divisor._d.Value;
+            if (dividend._m.HasValue && divisor._m.HasValue)
+                return dividend._m.Value / divisor._m.Value;
+            try
+            {
+                return checked(dividend._d ?? (dividend._i.HasValue ? (double)dividend._i.Value : (double)dividend._m.Value)) / checked(divisor._d ?? (divisor._i.HasValue ? (double)divisor._i.Value : (double)divisor._m.Value));
+            }
+            catch (OverflowException) { }
+            return checked(dividend._m ?? (dividend._i.HasValue ? (decimal)dividend._i.Value : (decimal)dividend._d.Value)) + checked(divisor._m ?? (divisor._i.HasValue ? (decimal)divisor._i.Value : (decimal)divisor._d.Value));
+        }
+        public static Numeric Remainder(Numeric dividend, Numeric divisor)
+        {
+            if (divisor.IsEmpty() || dividend.IsEmpty())
+                return _empty;
+            if (divisor.IsNaN() || dividend.IsNaN() || divisor.IsZero() || dividend.IsInfinity())
+                return _NaN;
+            if (divisor.IsInfinity())
+                return dividend;
+            if (dividend._c.HasValue || divisor._c.HasValue || dividend.IsZero() || dividend == divisor)
+                return _zero;
+            if (dividend._i.HasValue && divisor._i.HasValue)
+                return dividend._i.Value % divisor._i.Value;
+            try
+            {
+                var dDividend = checked(dividend._d ?? (dividend._i.HasValue ? (double)dividend._i.Value : (double)dividend._m.Value));
+                var dDivisor = checked(divisor._d ?? (divisor._i.HasValue ? (double)divisor._i.Value : (double)divisor._m.Value));
+                return dDividend - (dDivisor * Math.Truncate(dDividend / dDivisor));
+            }
+            catch (OverflowException) { }
+            var mDividend = checked(dividend._m ?? (dividend._i.HasValue ? (decimal)dividend._i.Value : (decimal)dividend._d.Value));
+            var mDivisor = checked(divisor._m ?? (divisor._i.HasValue ? (decimal)divisor._i.Value : (decimal)divisor._d.Value));
+            return mDividend - (mDivisor * Math.Truncate(mDividend / mDivisor));
+        }
         public static Numeric DivRem(Numeric dividend, Numeric divisor, out Numeric remainder)
         {
             if (dividend._i.HasValue && divisor._i.HasValue)
@@ -399,7 +543,7 @@ namespace TSN.Numerics
                 return division;
             }
             remainder = dividend % divisor;
-            return (dividend - remainder) / divisor;
+            return dividend / divisor;
         }
         public static Numeric Pow(Numeric value, Numeric exponent)
         {
@@ -496,265 +640,14 @@ namespace TSN.Numerics
         public static Numeric operator <<(Numeric value, int shift) => (value._i ?? throw new ArithmeticException()) << shift;
         public static Numeric operator >>(Numeric value, int shift) => (value._i ?? throw new ArithmeticException()) >> shift;
         public static Numeric operator ~(Numeric value) => value._i.HasValue ? (~value._i.Value) : throw new ArithmeticException();
-        public static Numeric operator -(Numeric value) => value._i.HasValue ? new Numeric(-value._i.Value) : (value._d.HasValue ? new Numeric(-value._d.Value) : (value._m.HasValue ? new Numeric(-value._m.Value) : value._c.HasValue ? new Numeric(-value._c.Value) : _empty));
-        public static Numeric operator +(Numeric value) => value._i.HasValue ? new Numeric(value._i.Value) : (value._d.HasValue ? new Numeric(value._d.Value) : (value._m.HasValue ? new Numeric(value._m.Value) : value._c.HasValue ? new Numeric(value._c.Value) : _empty));
-        public static Numeric operator ++(Numeric value) => value._i.HasValue ? new Numeric(value._i.Value + BigInteger.One) : (value._d.HasValue ? new Numeric(value._d.Value + 1D) : (value._m.HasValue ? new Numeric(value._m.Value + 1M) : value._c.HasValue ? new Numeric(value._c.Value + Complex.One) : new Numeric(BigInteger.One)));
-        public static Numeric operator --(Numeric value) => value._i.HasValue ? new Numeric(value._i.Value - BigInteger.One) : (value._d.HasValue ? new Numeric(value._d.Value - 1D) : (value._m.HasValue ? new Numeric(value._m.Value - 1M) : value._c.HasValue ? new Numeric(value._c.Value - Complex.One) : new Numeric(BigInteger.MinusOne)));
-        public static Numeric operator +(Numeric left, Numeric right)
-        {
-            if (left._i.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._i.Value + right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric((double)left._i.Value + right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric((decimal)left._i.Value + right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric((Complex)left._i.Value + right._c.Value);
-            }
-            else if (left._d.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._d.Value + (double)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._d.Value + right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric((decimal)left._d.Value + right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric(left._d.Value + right._c.Value);
-            }
-            else if (left._m.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._m.Value + (decimal)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._m.Value + (decimal)right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric(left._m.Value + right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric((Complex)left._m.Value + right._c.Value);
-            }
-            else if (left._c.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._c.Value + (Complex)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._c.Value + right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric(left._c.Value + (Complex)right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric(left._c.Value + right._c.Value);
-            }
-            throw new ArithmeticException();
-        }
-        public static Numeric operator -(Numeric left, Numeric right)
-        {
-            if (left._i.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._i.Value - right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric((double)left._i.Value - right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric((decimal)left._i.Value - right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric((Complex)left._i.Value - right._c.Value);
-            }
-            else if (left._d.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._d.Value - (double)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._d.Value - right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric((decimal)left._d.Value - right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric(left._d.Value - right._c.Value);
-            }
-            else if (left._m.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._m.Value - (decimal)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._m.Value - (decimal)right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric(left._m.Value - right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric((Complex)left._m.Value - right._c.Value);
-            }
-            else if (left._c.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._c.Value - (Complex)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._c.Value - right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric(left._c.Value - (Complex)right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric(left._c.Value - right._c.Value);
-            }
-            throw new ArithmeticException();
-        }
-        public static Numeric operator *(Numeric left, Numeric right)
-        {
-            if (left._i.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._i.Value * right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric((double)left._i.Value * right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric((decimal)left._i.Value * right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric((Complex)left._i.Value * right._c.Value);
-            }
-            else if (left._d.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._d.Value * (double)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._d.Value * right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric((decimal)left._d.Value * right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric(left._d.Value * right._c.Value);
-            }
-            else if (left._m.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._m.Value * (decimal)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._m.Value * (decimal)right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric(left._m.Value * right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric((Complex)left._m.Value * right._c.Value);
-            }
-            else if (left._c.HasValue)
-            {
-                if (right._i.HasValue)
-                    return new Numeric(left._c.Value * (Complex)right._i.Value);
-                else if (right._d.HasValue)
-                    return new Numeric(left._c.Value * right._d.Value);
-                else if (right._m.HasValue)
-                    return new Numeric(left._c.Value * (Complex)right._m.Value);
-                else if (right._c.HasValue)
-                    return new Numeric(left._c.Value * right._c.Value);
-            }
-            throw new ArithmeticException();
-        }
-        public static Numeric operator /(Numeric dividend, Numeric divisor)
-        {
-            if (dividend._i.HasValue)
-            {
-                if (divisor.IsZero())
-                    return dividend < _zero ? _negativeInfinity : _positiveInfinity;
-                else if (divisor._i.HasValue)
-                {
-                    if (dividend < divisor)
-                        return (decimal)dividend._i.Value / (decimal)divisor._i.Value;
-                    var div = BigInteger.DivRem(dividend._i.Value, divisor._i.Value, out var rem);
-                    if (rem.Sign == 0)
-                        return new Numeric(div);
-                    try
-                    {
-                        var x = checked((double)dividend._i);
-                        var y = checked((double)divisor._i);
-                        return x / y;
-                    }
-                    catch (OverflowException)
-                    {
-                        return (decimal)dividend._i / (decimal)divisor._i;
-                    }
-                }
-                else if (divisor._m.HasValue)
-                    return new Numeric((decimal)dividend._i.Value / divisor._m.Value);
-                else if (divisor._c.HasValue)
-                    return new Numeric((double)dividend._i.Value / divisor._c.Value);
-            }
-            else if (dividend._d.HasValue)
-            {
-                if (divisor._i.HasValue)
-                    return new Numeric(dividend._d.Value / (double)divisor._i.Value);
-                else if (divisor._d.HasValue)
-                    return new Numeric(dividend._d.Value / divisor._d.Value);
-                else if (divisor._m.HasValue)
-                    return new Numeric((decimal)dividend._d.Value / divisor._m.Value);
-                else if (divisor._c.HasValue)
-                    return new Numeric(dividend._d.Value / divisor._c.Value);
-            }
-            else if (dividend._m.HasValue)
-            {
-                if (divisor._i.HasValue)
-                    return new Numeric(dividend._m.Value / (decimal)divisor._i.Value);
-                else if (divisor._d.HasValue)
-                    return new Numeric(dividend._m.Value / (decimal)divisor._d.Value);
-                else if (divisor._m.HasValue)
-                    return new Numeric(dividend._m.Value / divisor._m.Value);
-                else if (divisor._c.HasValue)
-                    return new Numeric((Complex)dividend._m.Value / divisor._c.Value);
-            }
-            else if (dividend._c.HasValue)
-            {
-                if (divisor._i.HasValue)
-                    return new Numeric(dividend._c.Value / (Complex)divisor._i.Value);
-                else if (divisor._d.HasValue)
-                    return new Numeric(dividend._c.Value / divisor._d.Value);
-                else if (divisor._m.HasValue)
-                    return new Numeric(dividend._c.Value / (Complex)divisor._m.Value);
-                else if (divisor._c.HasValue)
-                    return new Numeric(dividend._c.Value / divisor._c.Value);
-            }
-            throw new ArithmeticException();
-        }
-        public static Numeric operator %(Numeric dividend, Numeric divisor)
-        {
-            if (dividend._i.HasValue)
-            {
-                if (divisor._i.HasValue)
-                    return new Numeric(dividend._i.Value % divisor._i.Value);
-                else if (divisor._d.HasValue)
-                    return new Numeric((double)dividend._i.Value % divisor._d.Value);
-                else if (divisor._m.HasValue)
-                    return new Numeric((decimal)dividend._i.Value % divisor._m.Value);
-                else if (divisor._c.HasValue && divisor._c.Value.Imaginary == 0D)
-                    return new Numeric((double)dividend._i.Value % divisor._c.Value.Real);
-            }
-            else if (dividend._d.HasValue)
-            {
-                if (divisor._i.HasValue)
-                    return new Numeric(dividend._d.Value % (double)divisor._i.Value);
-                else if (divisor._d.HasValue)
-                    return new Numeric(dividend._d.Value % divisor._d.Value);
-                else if (divisor._m.HasValue)
-                    return new Numeric((decimal)dividend._d.Value % divisor._m.Value);
-                else if (divisor._c.HasValue && divisor._c.Value.Imaginary == 0D)
-                    return new Numeric(dividend._d.Value % divisor._c.Value.Real);
-            }
-            else if (dividend._m.HasValue)
-            {
-                if (divisor._i.HasValue)
-                    return new Numeric(dividend._m.Value % (decimal)divisor._i.Value);
-                else if (divisor._d.HasValue)
-                    return new Numeric(dividend._m.Value % (decimal)divisor._d.Value);
-                else if (divisor._m.HasValue)
-                    return new Numeric(dividend._m.Value % divisor._m.Value);
-                else if (divisor._c.HasValue && divisor._c.Value.Imaginary == 0D)
-                    return new Numeric(dividend._m.Value % (decimal)divisor._c.Value.Real);
-            }
-            else if (dividend._c.HasValue && dividend._c.Value.Imaginary == 0D)
-            {
-                if (divisor._i.HasValue)
-                    return new Numeric(dividend._c.Value.Real % (double)divisor._i.Value);
-                else if (divisor._d.HasValue)
-                    return new Numeric(dividend._c.Value.Real % divisor._d.Value);
-                else if (divisor._m.HasValue)
-                    return new Numeric((decimal)dividend._c.Value.Real % divisor._m.Value);
-                else if (divisor._c.HasValue && divisor._c.Value.Imaginary == 0D)
-                    return new Numeric(dividend._c.Value.Real % divisor._c.Value.Real);
-            }
-            throw new ArithmeticException();
-        }
+        public static Numeric operator -(Numeric value) => Negate(value);
+        public static Numeric operator +(Numeric value) => value;
+        public static Numeric operator ++(Numeric value) => Add(value, _one);
+        public static Numeric operator --(Numeric value) => Subtract(value, _one);
+        public static Numeric operator +(Numeric left, Numeric right) => Add(left, right);
+        public static Numeric operator -(Numeric left, Numeric right) => Subtract(left, right);
+        public static Numeric operator *(Numeric left, Numeric right) => Multiply(left, right);
+        public static Numeric operator /(Numeric dividend, Numeric divisor) => Divide(dividend, divisor);
+        public static Numeric operator %(Numeric dividend, Numeric divisor) => Remainder(dividend, divisor);
     }
 }
