@@ -5,8 +5,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MajorMinorBuildVersion>1.0.6</MajorMinorBuildVersion>
-		<VersionRevision>$([System.Math]::Truncate($([MSBuild]::Multiply(10, $([System.DateTime]::Now.ToUniversalTime().Subtract(2022-09-17).TotalHours)))))</VersionRevision>
+		<MajorMinorBuildVersion>1.0.7</MajorMinorBuildVersion>
+		<VersionRevision>$([System.Math]::Truncate($([MSBuild]::Multiply(10, $([System.DateTime]::Now.ToUniversalTime().Subtract(2022-09-19).TotalHours)))))</VersionRevision>
 		<AssemblyVersion>$(MajorMinorBuildVersion).$(VersionRevision)</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
@@ -26,7 +26,7 @@
 		<PackageTags>numeric;number;wrap;wrapper;integer;complex;maths;mathematics;convert;sbyte;byte;short;ushort;int16;uint16;int;uint;int32;uint32;long;ulong;int64;uint64;half;float;single;double;decimal</PackageTags>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageReleaseNotes>Minor fixes</PackageReleaseNotes>
+		<PackageReleaseNotes>Critical bug fixes - Ultimate (final and stable) release of the version 1.0</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>

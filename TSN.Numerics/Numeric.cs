@@ -648,10 +648,12 @@ namespace TSN.Numerics
         {
             if (dividend._i.HasValue)
             {
-                if (divisor._d.HasValue || (divisor._i.HasValue && divisor._i.Value.Sign == 0))
-                    return new Numeric((double)dividend._i.Value / (divisor._d ?? (double)divisor._i.Value));
+                if (divisor.IsZero())
+                    return dividend < _zero ? _negativeInfinity : _positiveInfinity;
                 else if (divisor._i.HasValue)
                 {
+                    if (dividend < divisor)
+                        return (decimal)dividend._i.Value / (decimal)divisor._i.Value;
                     var div = BigInteger.DivRem(dividend._i.Value, divisor._i.Value, out var rem);
                     if (rem.Sign == 0)
                         return new Numeric(div);
