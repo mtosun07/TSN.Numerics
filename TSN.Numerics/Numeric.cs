@@ -494,15 +494,15 @@ namespace TSN.Numerics
                 return dividend._c.Value / (divisor._c ?? divisor._d ?? (divisor._i.HasValue ? (double)divisor._i.Value : (double)divisor._m.Value));
             if (divisor._c.HasValue)
                 return (dividend._d ?? (dividend._i.HasValue ? (double)dividend._i.Value : (double)dividend._m.Value)) / divisor._c.Value;
-            if (dividend._i.HasValue && divisor._i.HasValue && dividend._i.Value > divisor._i.Value)
+            if (dividend._i.HasValue && divisor._i.HasValue && BigInteger.Abs(dividend._i.Value) > BigInteger.Abs(divisor._i.Value))
             {
                 var div = BigInteger.DivRem(dividend._i.Value, divisor._i.Value, out var rem);
                 if (rem.Sign == 0)
                     return div;
             }
-            if (dividend._d.HasValue && divisor._d.HasValue)
+            else if (dividend._d.HasValue && divisor._d.HasValue)
                 return dividend._d.Value / divisor._d.Value;
-            if (dividend._m.HasValue && divisor._m.HasValue)
+            else if (dividend._m.HasValue && divisor._m.HasValue)
                 return dividend._m.Value / divisor._m.Value;
             try
             {
