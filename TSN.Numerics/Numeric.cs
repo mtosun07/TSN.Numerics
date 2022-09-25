@@ -83,12 +83,10 @@ namespace TSN.Numerics
         }
         public Numeric(Complex value)
         {
-            _m = null;
             if (value.Imaginary == 0D)
             {
-                _c = null;
-                var x = Math.Truncate(value.Real);
-                if (value.Real == x)
+                double x;
+                if (IsFinite(value.Real) && value.Real == (x = Math.Truncate(value.Real)))
                 {
                     _i = (BigInteger)x;
                     _d = null;
@@ -98,6 +96,7 @@ namespace TSN.Numerics
                     _i = null;
                     _d = value.Real;
                 }
+                _c = null;
             }
             else
             {
@@ -105,6 +104,7 @@ namespace TSN.Numerics
                 _d = null;
                 _c = value;
             }
+            _m = null;
         }
 
 
