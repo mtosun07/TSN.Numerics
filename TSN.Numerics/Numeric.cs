@@ -392,7 +392,7 @@ namespace TSN.Numerics
             if (left.IsNaN() || right.IsNaN())
                 return _NaN;
             if (left.IsInfinity() || right.IsInfinity())
-                return (left._c ?? (Complex)left._d.Value) + (right._c ?? (Complex)right._d.Value);
+                return (left._c ?? (Complex)(left._d ?? (left._m.HasValue ? (double)left._m.Value : (double)left._i.Value))) + (right._c ?? (Complex)(right._d ?? (right._m.HasValue ? (double)right._m.Value : (double)right._i.Value)));
             if (left.IsZero())
                 return right;
             if (right.IsZero())
@@ -421,7 +421,7 @@ namespace TSN.Numerics
             if (left.IsNaN() || right.IsNaN())
                 return _NaN;
             if (left.IsInfinity() || right.IsInfinity())
-                return (left._c ?? (Complex)left._d.Value) - (right._c ?? (Complex)right._d.Value);
+                return (left._c ?? (Complex)(left._d ?? (left._m.HasValue ? (double)left._m.Value : (double)left._i.Value))) - (right._c ?? (Complex)(right._d ?? (right._m.HasValue ? (double)right._m.Value : (double)right._i.Value)));
             if (left == right)
                 return _zero;
             if (right.IsZero())
@@ -450,7 +450,7 @@ namespace TSN.Numerics
             if (left.IsNaN() || right.IsNaN())
                 return _NaN;
             if (left.IsInfinity() || right.IsInfinity())
-                return (left._c ?? (Complex)left._d.Value) * (right._c ?? (Complex)right._d.Value);
+                return (left._c ?? (Complex)(left._d ?? (left._m.HasValue ? (double)left._m.Value : (double)left._i.Value))) * (right._c ?? (Complex)(right._d ?? (right._m.HasValue ? (double)right._m.Value : (double)right._i.Value)));
             if (left.IsZero() || right.IsZero())
                 return _zero;
             if (left == _one)
@@ -481,7 +481,7 @@ namespace TSN.Numerics
             if (divisor.IsNaN() || dividend.IsNaN())
                 return _NaN;
             if (dividend.IsInfinity() || divisor.IsInfinity())
-                return (dividend._c ?? (Complex)dividend._d.Value) / (divisor._c ?? (Complex)divisor._d.Value);
+                return (dividend._c ?? (Complex)(dividend._d ?? (dividend._m.HasValue ? (double)dividend._m.Value : (double)dividend._i.Value))) / (divisor._c ?? (Complex)(divisor._d ?? (divisor._m.HasValue ? (double)divisor._m.Value : (double)divisor._i.Value)));
             if (divisor.IsZero())
                 return dividend.IsZero() ? _NaN : (dividend < _zero ? _negativeInfinity : _positiveInfinity);
             if (dividend.IsZero())
