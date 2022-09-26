@@ -164,8 +164,21 @@ namespace TSN.Numerics
         {
             if (!IsEmpty() && !IsNaN())
             {
-                sign = _i?.Sign ?? CompareTo(_zero);
-                return true;
+                if (_i.HasValue)
+                {
+                    sign = _i.Value.Sign;
+                    return true;
+                }
+                try
+                {
+                    sign = CompareTo(_zero);
+                    return true;
+                }
+                catch (ArithmeticException)
+                {
+                    sign = 0;
+                    return false;
+                }
             }
             sign = 0;
             return false;
