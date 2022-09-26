@@ -641,7 +641,7 @@ namespace TSN.Numerics
         public static implicit operator Numeric(Complex o) => new Numeric(o);
 
         public static bool operator ==(Numeric left, Numeric right) => left.Equals(right);
-        public static bool operator !=(Numeric left, Numeric right) => left.Equals(right);
+        public static bool operator !=(Numeric left, Numeric right) => !left.Equals(right);
         public static bool operator <(Numeric left, Numeric right) => left.CompareTo(right) < 0;
         public static bool operator >(Numeric left, Numeric right) => left.CompareTo(right) > 0;
         public static bool operator <=(Numeric left, Numeric right) => left.CompareTo(right) <= 0;
