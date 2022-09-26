@@ -196,7 +196,7 @@ namespace TSN.Numerics
             info.AddValue(nameof(_c), _c, typeof(Complex?));
         }
         public object Clone() => +this;
-        public bool Equals(Numeric other) => CompareTo(other) == 0;
+        public bool Equals(Numeric other) => _i.HasValue ? (other._i.HasValue && _i.Value == other._i.Value) : (_d.HasValue ? (other._d.HasValue && _d.Value == other._d.Value) : (_m.HasValue ? (other._m.HasValue && _m.Value == other._m.Value) : (_c.HasValue ? (other._c.HasValue && _c.Value == other._c.Value) : other.IsEmpty())));
 
         public int CompareTo(object obj) => CompareTo(obj is Numeric n ? n : throw new ArgumentNullException(nameof(obj)));
         public int CompareTo(Numeric other)
@@ -205,36 +205,36 @@ namespace TSN.Numerics
             {
                 if (other._i.HasValue)
                     return _i.Value.CompareTo(other._i.Value);
-                else if (other._d.HasValue)
+                if (other._d.HasValue)
                     return Compare(_i.Value, other._d.Value);
-                else if (other._m.HasValue)
+                if (other._m.HasValue)
                     return Compare(_i.Value, other._m.Value);
-                else if (other._c.HasValue)
+                if (other._c.HasValue)
                     return Compare(_i.Value, other._c.Value);
             }
-            else if (_d.HasValue)
+            if (_d.HasValue)
             {
                 if (other._i.HasValue)
                     return Compare(_d.Value, other._i.Value);
-                else if (other._d.HasValue)
+                if (other._d.HasValue)
                     return _d.Value.CompareTo(other._d.Value);
-                else if (other._m.HasValue)
+                if (other._m.HasValue)
                     return Compare(_d.Value, other._m.Value);
-                else if (other._c.HasValue)
+                if (other._c.HasValue)
                     return Compare(_d.Value, other._c.Value);
             }
-            else if (_m.HasValue)
+            if (_m.HasValue)
             {
                 if (other._i.HasValue)
                     return Compare(_m.Value, other._i.Value);
-                else if (other._d.HasValue)
+                if (other._d.HasValue)
                     return Compare(_m.Value, other._d.Value);
-                else if (other._m.HasValue)
+                if (other._m.HasValue)
                     return _m.Value.CompareTo(other._m.Value);
-                else if (other._c.HasValue)
+                if (other._c.HasValue)
                     return Compare(_m.Value, other._c.Value);
             }
-            else if (_c.HasValue)
+            if (_c.HasValue)
             {
                 if (other._i.HasValue)
                     return Compare(_c.Value, other._i.Value);
@@ -245,7 +245,7 @@ namespace TSN.Numerics
                 if (other._c.HasValue)
                     return Compare(_c.Value, other._c.Value);
             }
-            else if (other.IsEmpty())
+            if (other.IsEmpty())
                 return 0;
             throw new ArithmeticException();
         }
@@ -592,7 +592,7 @@ namespace TSN.Numerics
                     return Inverse(Pow(value, -exponent));
                 var div = Truncate(exponent / _half);
                 var rem = exponent - div * _half;
-                var pow = Complex.Pow(-1D, (Complex)rem) * Pow(Abs(value), rem);
+                var pow = Complex.Pow(-1D, (Complex)rem) * Pow(Abs(value), exponent);
                 var i = div % 4;
                 return i.IsZero() ? pow : (pow * (i == _one ? Complex.ImaginaryOne : (i == _two ? new Complex(-1D, 0D) : new Complex(0D, -1D))));
             }
@@ -640,8 +640,8 @@ namespace TSN.Numerics
         public static implicit operator Numeric(decimal o) => new Numeric(o);
         public static implicit operator Numeric(Complex o) => new Numeric(o);
 
-        public static bool operator ==(Numeric left, Numeric right) => left.CompareTo(right) == 0;
-        public static bool operator !=(Numeric left, Numeric right) => left.CompareTo(right) != 0;
+        public static bool operator ==(Numeric left, Numeric right) => left.Equals(right);
+        public static bool operator !=(Numeric left, Numeric right) => left.Equals(right);
         public static bool operator <(Numeric left, Numeric right) => left.CompareTo(right) < 0;
         public static bool operator >(Numeric left, Numeric right) => left.CompareTo(right) > 0;
         public static bool operator <=(Numeric left, Numeric right) => left.CompareTo(right) <= 0;
